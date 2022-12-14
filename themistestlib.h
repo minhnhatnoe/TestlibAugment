@@ -1,17 +1,24 @@
+#include <iostream>
+namespace _themis{
+    long double result = -1;
+    struct result_printer{
+        ~result_printer(){
+            std::cout << result << "\n";
+        }
+    } result_printer;
+};
 #include "testlib/testlib.h"
-#include <bits/stdc++.h>
 
 namespace _themis{
     char problem_name[1000];
-    const char input[] = ".inp", output[] = ".out";
 
-    char test_data[1000], cwd[1000], problem_name[1000];
+    char test_data[1000], cwd[1000];
     char input_file[1000], output_file[1000], answer_file[1000];
 
     char* argv_new[4] = {test_data, input_file, output_file, answer_file};
 
     void get_problem_name(const char *path){
-        char* start = strrchr(path, '/')+7; // Skips "/Check"
+        char* start = strrchr(path, '\\')+6; // Skips "\Check"
         char* end = strrchr(path, '.'); // 
 
         char *buffer;
@@ -21,23 +28,23 @@ namespace _themis{
     }
     void themis_init(){
         std::cin >> test_data >> cwd;
-        get_problem_name(__FILE__);
+        get_problem_name(__BASE_FILE__);
 
         snprintf(input_file, 1000, "%s%s.inp", test_data, problem_name);
         snprintf(output_file, 1000, "%s%s.out", test_data, problem_name);
         snprintf(answer_file, 1000, "%s%s.out", cwd, problem_name);
 
+        dup2(STDOUT_FILENO, STDERR_FILENO);
         registerTestlibCmd(4, argv_new);
     }
     void quitf_other(TResult r, const char *msg, ...){
         FMT_TO_RESULT(msg, msg, message);
-        std::cout << message << "\n";
         if (r == _ok)
-            std::cout << "1\n";
+            result = 1;
         else if (r >= _partially)
-            std::cout << float(r-_partially)/200 << "\n";
+            result = (r-_partially)/200.L;
         else
-            std::cout << "0\n";
+            result = 0;
         quitf(_ok, message.c_str());
     }
 }
