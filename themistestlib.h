@@ -1,15 +1,8 @@
 #include <iostream>
-namespace _themis{
-    long double result = -1;
-    struct result_printer{
-        ~result_printer(){
-            std::cout << result << "\n";
-        }
-    } result_printer;
-};
 #include "testlib/testlib.h"
 
 namespace _themis{
+    long double result = -1;
     char problem_name[1000];
 
     char test_data[1000], cwd[1000];
@@ -45,7 +38,7 @@ namespace _themis{
             result = (r-_partially)/200.L;
         else
             result = 0;
-        quitf(_ok, message.c_str());
+        quitf(_ok, (message + "\n" + std::to_string(result)).c_str());
     }
 }
 #define quitf _themis::quitf_other
