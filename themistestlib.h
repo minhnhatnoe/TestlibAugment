@@ -24,21 +24,24 @@ namespace _themis{
         get_problem_name(__BASE_FILE__);
 
         snprintf(input_file, 1000, "%s%s.inp", test_data, problem_name);
-        snprintf(output_file, 1000, "%s%s.out", test_data, problem_name);
-        snprintf(answer_file, 1000, "%s%s.out", cwd, problem_name);
+        snprintf(output_file, 1000, "%s%s.out", cwd, problem_name);
+        snprintf(answer_file, 1000, "%s%s.out", test_data, problem_name);
 
         dup2(STDOUT_FILENO, STDERR_FILENO);
         registerTestlibCmd(4, argv_new);
     }
     void quitf_other(TResult r, const char *msg, ...){
         FMT_TO_RESULT(msg, msg, message);
-        if (r == _ok)
+        if (r == _ok){
             result = 1;
-        else if (r >= _partially)
+            quitf(_ok, (message + "\n" + std::to_string(result)).c_str());
+        }
+        if (r >= _partially)
             result = (r-_partially)/200.L;
         else
             result = 0;
-        quitf(_ok, (message + "\n" + std::to_string(result)).c_str());
+        std::cout << message << "\n" << std::to_string(result) << "\n";
+        _exit(0);
     }
 }
 #define quitf _themis::quitf_other
